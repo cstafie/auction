@@ -15,7 +15,7 @@ class App extends Component {
         <p className="App-intro">
           To get started, edit <code>src/App.js</code> and save to reload.
         </p>
-        <Chat socket={this.props.io('http://localhost:3001/')} />
+        <Chat socket={this.props.io('http://192.168.0.8:3001')} />
       </div>
     );
   }
