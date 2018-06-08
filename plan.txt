@@ -1,0 +1,12 @@
+login 
+	type username 
+	go to lobby
+
+lobby
+	create a game
+	join a gme
+
+game
+	send chat messages
+	play game
+	

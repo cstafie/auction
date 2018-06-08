@@ -1,7 +1,37 @@
 import React, { Component } from 'react';
 import './Chat.css';
 
-// TODO: cache user data for smooth reconnect?
+let ChatBox = ({message, messages, submitMessage, messageHandleChange}) => 
+  <div style={{textAlign: 'left'}}> 
+    {messages} 
+    <form onSubmit={submitMessage}>
+      <label>
+        <input 
+          type="text" 
+          value={message} 
+          onChange={messageHandleChange} />
+      </label>
+      <input type="submit" value="Send"/>
+    </form>
+  </div>;
+
+let UserNameForm = ({userName, submitUserName, userNameHandleChange}) => 
+  <form onSubmit={submitUserName}>
+    <label>
+      Name
+      <input 
+        type="text" 
+        value={userName} 
+        onChange={userNameHandleChange} />
+    </label>
+    <input type="submit" value="Join Chat"/>
+  </form>;  
+
+let UserName = ({userName, color}) =>
+  <span style={{color}}> {userName} </span>;
+
+let Message = ({userName, color, message}) =>
+  <div> <UserName userName={userName} color={color} /> {message} </div>
 
 class Chat extends Component {
 
@@ -12,43 +42,27 @@ class Chat extends Component {
       message: '',
       messages: [],
     }
-    //let socket = this.props.io('http://localhost:3001/');
-    //socket.on('server-message', (msg) => console.log(msg));
-
-    this.userNameHandleChange = this.userNameHandleChange.bind(this);
-    this.submitUserName = this.submitUserName.bind(this);
-    this.messageHandleChange = this.messageHandleChange.bind(this);
-    this.submitMessage = this.submitMessage.bind(this);
-
-    this.props.socket.on('add-message', ({userName, color, message}) => {
-      console.log(message);
-      this.setState({
-        messages: this.state.messages.concat([ 
-          <div key={this.state.messages.length}> 
-            {this.printUserName(userName, color)}: {message}
-          </div> ])
-      });
-      console.log(`${color} ${userName} said ${message}`);
-    })
-
-    this.props.socket.on('user-joined', ({userName, color}) => {
-      this.setState({
-        messages: this.state.messages.concat([ 
-          <div key={this.state.messages.length}> 
-            {this.printUserName(userName, color)} has joined the chat 
-          </div>])
-      });
-      console.log(`${color} ${userName} has joined the chat.`);
-    });
   }
 
-  printUserName(userName, color) {
-    return <span style={{color}}> {userName} </span>;
+  // once you have a user name you can listen for messages
+  handleSocketOn(id, data) {
+    console.log(id, data);
+    switch(id) {
+      case 'message': 
+        this.setState({
+          messages: this.state.messages.concat([
+            <Message key={this.state.messages.length} {...data} /> ])
+        });
+        break;
+      default:
+        break;
+    }
   }
 
   submitUserName(event) {
     if (this.state.userName) {
       this.props.socket.emit('connect-user', this.state.userName, ({userId}) => {
+        this.props.socket.on('message', this.handleSocketOn.bind(this, 'message'));
         this.setState({userId});
       });
     }
@@ -61,7 +75,6 @@ class Chat extends Component {
 
   submitMessage(event) {
     if (this.state.message) {
-      console.log('sending', this.state.message);
       this.props.socket.emit(
         'user-message', 
         {
@@ -77,38 +90,16 @@ class Chat extends Component {
   messageHandleChange(event) {
     this.setState({message: event.target.value})
   }
-
-  ConnectUser() {
-    return this.state.userId ? 
-      <div> 
-        {this.state.messages} 
-        <form onSubmit={this.submitMessage}>
-          <label>
-            Message:
-            <input 
-              type="text" 
-              value={this.state.message} 
-              onChange={this.messageHandleChange} />
-          </label>
-          <input type="submit" value="Submit"/>
-        </form>
-      </div> :
-      <form onSubmit={this.submitUserName}>
-        <label>
-          Name:
-          <input 
-            type="text" 
-            value={this.state.userName} 
-            onChange={this.userNameHandleChange} />
-        </label>
-        <input type="submit" value="Submit"/>
-      </form>;
-  } 
-
-  // // <input type="button" value="Submit" onClick={this.submitUserName}/>
   
   render() {
-    return this.ConnectUser();
+    return this.state.userId ? 
+      <ChatBox message={this.state.message}
+               messages={this.state.messages}
+               submitMessage={this.submitMessage.bind(this)}
+               messageHandleChange={this.messageHandleChange.bind(this)} /> :
+      <UserNameForm userName={this.userName}
+                    submitUserName={this.submitUserName.bind(this)}
+                    userNameHandleChange={this.userNameHandleChange.bind(this)} />      
   }
 }
 

@@ -9,6 +9,7 @@ http.listen(3001, function(){
 });
 
 // TODO: put locks on critical sections
+// TODO: refactor duplicated code for pushing and emitting messages
 
 // server messages
 // - when user connects - emit to all
@@ -42,12 +43,8 @@ let makeNewUser = (userName) => {
 	return null;
 }
 
-let emitNewUser = (userName, color) => {
-	io.emit('user-joined', {userName, color});
-}
-
-let emitMessage = () => {
-	io.emit('add-message', messages[messages.length-1]);
+let emitMessage = (message=messages[messages.length-1]) => {
+	io.emit('message', message);
 }
 
 io.on('connection', (socket) => {
@@ -60,9 +57,8 @@ io.on('connection', (socket) => {
   		messages.push({
   			userName: user.userName, 
   			color: user.color, 
-  			message
+  			message: ` : ${message}`
   		});
-  		console.log(messages);
   		emitMessage();
   	}
   	else {
@@ -82,30 +78,29 @@ io.on('connection', (socket) => {
   		users[newUser.userId] = newUser;
   		console.log(newUser);
   		fn(newUser);
-  		emitNewUser(newUser.userName, newUser.color);
+  		messages.push({
+        userName: newUser.userName, 
+        color: newUser.color, 
+        message: ' has joined the chat'
+      });
+      emitMessage();
   	}
 	});
 
   socket.on('disconnect', () => {
   	let suIndex = socketUsers.map(su=> su.socket).indexOf(socket);
   	if (suIndex !== -1) {
-	  	let userId = socketUsers[suIndex].userId
-	  	colors.push(users[userId].color);
-	  	delete users[userId];
+	  	let user = users[socketUsers[suIndex].userId]
+      messages.push({
+        userName: user.userName, 
+        color: user.color, 
+        message: ' has left the chat'
+      });
+      emitMessage();
+	  	colors.push(user.color);
+	  	delete user;
 	  	socketUsers.splice(suIndex,1);
   	}
     console.log('user disconnected');
   });
 });
-
-
-
-
-
-
-
-
-
-
-
-
