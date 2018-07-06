@@ -44,20 +44,20 @@ class Chat extends Component {
     }
   }
 
-  // once you have a user name you can listen for messages
-  handleSocketOn(id, data) {
-    console.log(id, data);
-    switch(id) {
-      case 'message': 
-        this.setState({
-          messages: this.state.messages.concat([
-            <Message key={this.state.messages.length} {...data} /> ])
-        });
-        break;
-      default:
-        break;
-    }
-  }
+  // // once you have a user name you can listen for messages
+  // handleSocketOn(id, data) { // dispatch receive message
+  //   console.log(id, data);
+  //   switch(id) {
+  //     case 'message': 
+  //       this.setState({
+  //         messages: this.state.messages.concat([
+  //           <Message key={this.state.messages.length} {...data} /> ])
+  //       });
+  //       break;
+  //     default:
+  //       break;
+  //   }
+  // }
 
   submitUserName(event) {
     if (this.state.userName) {

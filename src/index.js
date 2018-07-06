@@ -4,6 +4,19 @@ import './index.css';
 import App from './containers/App.js';
 import registerServiceWorker from './registerServiceWorker';
 import io from 'socket.io-client';
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
+import rootReducer from './reducers';
+import middleware from './middleware';
 
-ReactDOM.render(<App io={io}/>, document.getElementById('root'));
+
+const store = createStore(rootReducer,
+	applyMiddelware(...middleware));
+
+ReactDOM.render(
+	<Provider store={store}>
+		<App io={io}/>
+	</Provider>, 
+	document.getElementById('root'));
+
 registerServiceWorker();

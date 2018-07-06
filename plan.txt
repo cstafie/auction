@@ -1,10 +1,20 @@
+
+
+- add redux to frontend
+- abstract out server socket messages so they can be handled by redux
+- add redux to backend
+- share resrouces between frontend redux and backend redux
+- add bootstrap
+- 
+
+
 login 
 	type username 
 	go to lobby
 
 lobby
 	create a game
-	join a gme
+	join a game
 
 game
 	send chat messages
