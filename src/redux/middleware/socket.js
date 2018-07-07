@@ -18,9 +18,11 @@ const socketDecapsulator = ({dispatch}) => next => action => {
  	}
 }
 
-function createSocketEncapsulator(io) {
+function socketEncapsulator(io) {
   return ({dispatch}) => next => action => {
     next(action);
+    
+    dispatch()
 
 	 	if (action.type === 'SEND_SOCKET_MESSAGE') {
 	 		switch (action.data.type) {
@@ -36,12 +38,5 @@ function createSocketEncapsulator(io) {
 	 	}
   };
 }
-
-const thunk = createThunkMiddleware();
-thunk.withExtraArgument = createThunkMiddleware;
-
-export default thunk;
-
-const socketEncapsulator 
 
 export {socketDecapsulator, socketEncapsulator}

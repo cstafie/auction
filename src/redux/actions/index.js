@@ -8,7 +8,10 @@ export const receiveSocketMessage = socketMessage => ({
 	data: socketMessage,
 });
 
-export const submitUserName
+export const submitUserName = userName => ({
+	type: 'SUBMIT_USER_NAME',
+	data: userName,
+});
 
 export { 
 	chatMessage, 

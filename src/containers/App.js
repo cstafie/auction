@@ -1,16 +1,35 @@
 import React, { Component } from 'react';
 import './App.css';
 import Chat from './Chat';
+import { connect } from "react-redux";
 
 class App extends Component {
+
+	componentWillMount() {
+		this.props.connectUser();
+	}	
+
+	componentWillUnmount() {
+		this.props.disconnectUser();
+	}
 
   render() {
     return (
       <div className="App">
-        <Chat socket={this.props.io('http://192.168.0.8:3001')} />
+      	<
+        <Chat messages={this.props.messages}} />
       </div>
     );
   }
 }
 
-export default App;
+const mapStateToProps = state => ({
+  pending       : state.ui.pending,
+  orderInProcess: state.ui.orderInProcess,
+  books         : state.books,
+  order         : state.order
+});
+
+export default connect(mapStateToProps, {
+  userConnect, selectBook, submitOrder
+})(App);
