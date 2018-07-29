@@ -1,6 +1,6 @@
-const { applyMiddleware, createStore } = require('redux');
+import { applyMiddleware, createStore } from 'redux';
 import { reducers } from './reducers';
-import { usersMdl } from './middleware/userMdl'
+import { usersMdl } from './middleware/usersMdl'
 import { socketMdl } from './middleware/socketMdl';
 import { chatMdl } from './middleware/chatMdl';
 

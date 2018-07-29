@@ -1,2 +1,2 @@
 
-export const userMdl = [];
+export const usersMdl = [];

@@ -17,6 +17,6 @@ export const disconnectUser = () => ({
 });
 
 export const updateUser = user => ({
-	type: UPDATE_USER,
+	type: UPDATE_USER,	
 	payload: user,
 });

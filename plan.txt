@@ -6,6 +6,7 @@
 - share resrouces between frontend redux and backend redux
 - add milligram
 - add react router
+- try to get redux-like logging in the backend
 
 
 login 
