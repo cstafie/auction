@@ -1,6 +1,6 @@
-import { applyMiddleware, createStore } from 'redux';
+const { applyMiddleware, createStore } = require('redux');
 import { reducers } from './reducers';
-import { userMdl } from './middleware/userMdl'
+import { usersMdl } from './middleware/userMdl'
 import { socketMdl } from './middleware/socketMdl';
 import { chatMdl } from './middleware/chatMdl';
 
@@ -9,6 +9,6 @@ export const store = createStore(
   applyMiddleware(
   	...socketMdl, 
   	...chatMdl, 
-  	...userMdl
+  	...usersMdl
 	),
 );

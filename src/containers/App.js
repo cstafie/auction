@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import './App.css';
 import Chat from './Chat';
-import { connect } from "react-redux";
+import Input from '../components/Input';
+import { connect } from 'react-redux';
+import { connectUser, disconnectUser, handleSubmitUsername} from '../redux/actions/user';
 
 class App extends Component {
 
@@ -15,21 +16,22 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
-      	<
-        <Chat messages={this.props.messages}} />
+      <div>
+      	{this.props.user ? // this will eventually be replaced by a router
+      		<Chat /> : // this will eventually change to game then lobby
+      		<Input labelText='username'
+      					 buttonText='join chat'
+      					 handleSubmit={this.props.handleSubmitUsername} />
+      	}
       </div>
     );
   }
 }
 
 const mapStateToProps = state => ({
-  pending       : state.ui.pending,
-  orderInProcess: state.ui.orderInProcess,
-  books         : state.books,
-  order         : state.order
+  user: state.user,
 });
 
 export default connect(mapStateToProps, {
-  userConnect, selectBook, submitOrder
+  connectUser, disconnectUser, handleSubmitUsername
 })(App);

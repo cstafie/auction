@@ -1,25 +1,19 @@
-var app = require('express')();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+const app = require('express')();
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
 
 app.get('/', function(req, res) {});
 
-http.listen(3001, function(){
+http.listen(3001, function() {
   console.log('listening on *:3001');
 });
 
-// TODO: put locks on critical sections
-// TODO: refactor duplicated code for pushing and emitting messages
+const store = require('./redux/store');
 
-// server messages
-// - when user connects - emit to all
-// - when user disconnects - emit to all
+// io.on('connection', (socket) => {
 
-// user messaeges
 
-// TODO: cookie for userId to do reconnect
 
-// game messages ? or should that go in game log
 
 let users = {};
 let messages = [];

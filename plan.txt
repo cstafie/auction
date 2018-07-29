@@ -1,12 +1,11 @@
 
 
 - add redux to frontend
-- add react router
 - abstract out server socket messages so they can be handled by redux
 - add redux to backend
 - share resrouces between frontend redux and backend redux
-- add bootstrap
-- 
+- add milligram
+- add react router
 
 
 login 
