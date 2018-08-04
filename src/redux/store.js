@@ -1,10 +1,15 @@
 import { applyMiddleware, createStore, compose } from 'redux';
-import { reducers } from './reducers';
+import { routerMiddleware, connectRouter } from 'connected-react-router'
+import { createBrowserHistory } from 'history'
+import { rootReducer } from './reducers';
 import { middleware } from './middleware';
 
+export const history = createBrowserHistory(); 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 export const store = createStore(
-  reducers,
-  composeEnhancers(applyMiddleware(...middleware)),
+  connectRouter(history)(rootReducer),
+  composeEnhancers(applyMiddleware(
+  	routerMiddleware(history),
+  	...middleware)),
 );

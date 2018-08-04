@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route } from "react-router-dom"; // TODO: why not use my own router with redux?
+import { Route, Switch } from 'react-router' // react-router v4
 import Lobby from './Lobby';
 import Input from '../components/Input';
 import { connect } from 'react-redux';
@@ -18,19 +18,18 @@ class App extends Component {
 	}	
 
   render() {
+    console.log('hello');
     return (
-      <Router>
-        <div>
-          <Route exact path='/' component={() => Login(this.props)} />
-          <Route path='/lobby' component={Lobby} />
-        </div> 
-      </Router>
+      <div>
+        <Route exact path='/' component={() => Login(this.props)} />
+        <Route path='/lobby' component={Lobby} />
+      </div> 
     );
   }
 };
 
 const mapStateToProps = state => ({
-  user: state.user,
+  router: state.router, // so that route changes on router change
 });
 
 export default connect(mapStateToProps, {
