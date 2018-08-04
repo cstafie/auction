@@ -8,12 +8,14 @@ export const handleSubmitUsername = event => ({
 	payload: event,
 });
 
-export const connectUser = () => ({
+export const connectUser = (socket) => ({
 	type: CONNECT_USER,
+	payload: socket,
 });
 
-export const disconnectUser = () => ({
+export const disconnectUser = (socket) => ({
 	type: DISCONNECT_USER,
+	payload: socket,
 });
 
 export const updateUser = user => ({

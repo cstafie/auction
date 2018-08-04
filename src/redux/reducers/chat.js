@@ -11,7 +11,7 @@ const chat = (state = defaultState, action) => {
         ...state,
         chat: [
           ...chat,
-          action.data
+          action.payload
         ]
       };
     default:

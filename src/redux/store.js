@@ -1,14 +1,10 @@
-import { applyMiddleware, createStore } from 'redux';
+import { applyMiddleware, createStore, compose } from 'redux';
 import { reducers } from './reducers';
-import { userMdl } from './middleware/userMdl'
-import { socketMdl } from './middleware/socketMdl';
-import { chatMdl } from './middleware/chatMdl';
+import { middleware } from './middleware';
+
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 export const store = createStore(
   reducers,
-  applyMiddleware(
-  	...socketMdl, 
-  	...chatMdl, 
-  	...userMdl
-	),
+  composeEnhancers(applyMiddleware(...middleware)),
 );

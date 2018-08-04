@@ -1,18 +1,21 @@
-import { SOCKET_RECEIVE, SOCKET_SEND, socketReceive} from '../actions/socket';
-import { CONNECT_USER } from '../actions/user';
-
 import io from 'socket.io-client';
+import { 
+	SOCKET_RECEIVE, 
+	SOCKET_SEND, 
+	CONNECT_TO_LOBBY, 
+	socketReceive, 
+} from '../actions/socket';
 
 const ACTION_CHANNEL = 'ACTION';
-const SERVER = 'http://192.168.0.8:3001';
+const LOBBY = 'http://localhost:3001/lobby';
 let socketConnection = undefined;
 
 const connectToSocket = ({dispatch}) => next => action => {
 	next(action);
 
-	if (action.type === CONNECT_USER) {
-		socketConnection = io(SERVER);
-		socketConnection.on(ACTION_CHANNEL, (action) => dispatch(socketReceive(action)));
+	if (action.type === CONNECT_TO_LOBBY) {
+		socketConnection = io(LOBBY);
+		socketConnection.on(ACTION_CHANNEL, action => dispatch(socketReceive(action)));
 	}
 }
 

@@ -1,37 +1,39 @@
 import React, { Component } from 'react';
-import Chat from './Chat';
+import { BrowserRouter as Router, Route } from "react-router-dom"; // TODO: why not use my own router with redux?
+import Lobby from './Lobby';
 import Input from '../components/Input';
 import { connect } from 'react-redux';
-import { connectUser, disconnectUser, handleSubmitUsername} from '../redux/actions/user';
+import { submitUsername } from '../redux/actions/user';
+import { connectToLobby } from '../redux/actions/socket';
+
+const Login = ({submitUsername}) =>
+  <Input labelText='username'
+         buttonText='join lobby'
+         handleSubmit={submitUsername} />;
 
 class App extends Component {
 
 	componentWillMount() {
-		this.props.connectUser();
+		this.props.connectToLobby();
 	}	
-
-	componentWillUnmount() {
-		this.props.disconnectUser();
-	}
 
   render() {
     return (
-      <div>
-      	{this.props.user ? // this will eventually be replaced by a router
-      		<Chat /> : // this will eventually change to game then lobby
-      		<Input labelText='username'
-      					 buttonText='join chat'
-      					 handleSubmit={this.props.handleSubmitUsername} />
-      	}
-      </div>
+      <Router>
+        <div>
+          <Route exact path='/' component={() => Login(this.props)} />
+          <Route path='/lobby' component={Lobby} />
+        </div> 
+      </Router>
     );
   }
-}
+};
 
 const mapStateToProps = state => ({
   user: state.user,
 });
 
 export default connect(mapStateToProps, {
-  connectUser, disconnectUser, handleSubmitUsername
+  submitUsername, 
+  connectToLobby,
 })(App);

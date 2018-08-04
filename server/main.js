@@ -2,8 +2,9 @@ import express from 'express';
 import http from 'http';
 import socketio from 'socket.io';
 import { store } from './redux/store';
+import { socketReceive } from './redux/actions/socket';
+import { connectUser, disconnectUser } from './redux/actions/users';
 
-// init server;
 const app = express();
 const server = http.Server(app);
 const io = socketio(server); 
@@ -13,17 +14,26 @@ server.listen(3001, function() {
   console.log('listening on *:3001');
 });
 
-
 const ACTION_CHANNEL = 'ACTION';
+const emitSocketAction = (action) => io.emit(ACTION_CHANNEL, action);
 
-io.on('connection', (socket) => {
-  console.log('user connected');
+const lobby = io
+  .of('/lobby')
+  .on('connection', (socket) => {
+    console.log('user connected to lobby');
+    store.dispatch(connectUser(socket));
 
-  socket.on('ACTION', () => {
+    socket.on(ACTION_CHANNEL, (action) => {
+      action.socket = socket;
+      store.dispatch(socketReceive(action));
+    });
 
+    socket.on('disconnect', () => {
+      store.dispatch(disconnectUser(socket))
+    }); 
   });
-});
 
+export { emitSocketAction };
 
 
 

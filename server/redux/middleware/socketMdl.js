@@ -1,32 +1,21 @@
 import { SOCKET_RECEIVE, SOCKET_SEND, socketReceive} from '../actions/socket';
 import { CONNECT_USER } from '../actions/users';
+import { emitSocketAction } from '../../main';
 
-// const ACTION_CHANNEL = 'ACTION';
+const socketDecapsulator = ({dispatch}) => next => action => {
+  next(action);
 
-// const connectToSocket = ({dispatch}) => next => action => {
-// 	next(action);
+ 	if (action.type === SOCKET_RECEIVE) {
+ 		dispatch(action.payload); 
+ 	}
+}
 
-// 	if (action.type === CONNECT_USER) {
-// 		socketConnection = io(SERVER);
-// 		socketConnection.on(ACTION_CHANNEL, (action) => dispatch(socketReceive(action)));
-// 	}
-// }
-
-// const socketDecapsulator = ({dispatch}) => next => action => {
-//   next(action);
-
-//  	if (action.type === SOCKET_RECEIVE) {
-//  		dispatch(action.payload); // TODO: assert action payload is always an action
-//  	}
-// }
-
-// const socketEncapsulator = ({dispatch}) => next => action => {
-//   next(action);
+const socketEncapsulator = ({dispatch}) => next => action => {
+  next(action);
   
-//   if (action.type === SOCKET_SEND) { // TODO: look at socket.io for error handling
-//   	socketConnection.emit(ACTION_CHANNEL, action.paylod); // TODO: assert action payload is always an action
-//   }
-// };
+  if (action.type === SOCKET_SEND) { 
+  	emitSocketAction(action.paylod);
+  }
+};
 
-//export const socketMdl = [connectSocket, socketDecapsulator, socketEncapsulator];
-export const socketMdl = [];
+export const socketMdl = [socketDecapsulator, socketEncapsulator];
