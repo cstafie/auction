@@ -9,6 +9,12 @@ class Input extends Component {
     }
   }
 
+  handleKeyPress(event) {
+    if(event.key === 'Enter'){
+      this.handleSubmit();
+    }
+  }
+
   render() {
     return (
       <div>
@@ -17,7 +23,8 @@ class Input extends Component {
           name='text' 
           value={this.state.text}
           onChange={this.handleText}
-          type='text' />
+          type='text' 
+          onKeyPress={(event) => this.handleKeyPress(event)}/>
         <button onClick={() => this.handleSubmit()}>
           {this.props.buttonText}
         </button>

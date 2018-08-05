@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route, Switch } from 'react-router' // react-router v4
+import { Route, Switch } from 'react-router';
 import Lobby from './Lobby';
 import Input from '../components/Input';
 import { connect } from 'react-redux';
@@ -18,12 +18,13 @@ class App extends Component {
 	}	
 
   render() {
-    console.log('hello');
     return (
-      <div>
-        <Route exact path='/' component={() => Login(this.props)} />
-        <Route path='/lobby' component={Lobby} />
-      </div> 
+      <div className='app'>
+        <Switch>
+          <Route exact path='/' component={() => Login(this.props)} />
+          <Route path='/lobby' component={Lobby} />
+        </Switch> 
+      </div>
     );
   }
 };
