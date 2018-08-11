@@ -14,26 +14,32 @@ server.listen(3001, function() {
   console.log('listening on *:3001');
 });
 
-const ACTION_CHANNEL = 'ACTION';
-const emitSocketAction = (action) => io.emit(ACTION_CHANNEL, action);
+const LOBBY_CHANNEL = '/lobby';
+const LOBBY_KEY = 'LOBBY';
+//const emitSocketAction = (action) => io.emit(ACTION_CHANNEL, action);
 
 const lobby = io
-  .of('/lobby')
+  .of(LOBBY_CHANNEL)
   .on('connection', (socket) => {
     console.log('user connected to lobby');
     store.dispatch(connectUser(socket));
 
-    socket.on(ACTION_CHANNEL, (action) => {
-      action.socket = socket;
-      store.dispatch(socketReceive(action));
+    socket.on(LOBBY_KEY, (action) => {
+      store.dispatch(action);
     });
 
     socket.on('disconnect', () => {
+      console.log('user disconnected from lobby');
       store.dispatch(disconnectUser(socket))
     }); 
   });
 
-export { emitSocketAction };
+
+const sendToAllInLobby = (action) => {
+  lobby.emit(LOBBY_CHANNEL).emit(LOBBY_KEY, action); 
+};
+
+export { sendToAllInLobby };
 
 
 

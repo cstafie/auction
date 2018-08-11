@@ -6,6 +6,7 @@ class Input extends Component {
   handleSubmit() {
     if (this.state.text) {
       this.props.handleSubmit(this.state.text);
+      this.setState({text: ''})
     }
   }
 

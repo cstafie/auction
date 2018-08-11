@@ -9,5 +9,4 @@ const updateUser = ({dispatch}) => next => action => {
 	}
 }; 
 
-
 export const userMdl = [updateUser];

@@ -8,24 +8,25 @@ const CreateChatRoom = ({createRoom}) =>
          buttonText='create room'
          handleSubmit={createRoom} />;
 
-
 const Room = ({id, name, numUsers}) => 
 	<tr key={id}>
     <td>{name}</td>
     <td>{numUsers}</td>
+    <td> <button> join </button> </td>
   </tr>;
 
 
 const RoomList = ({rooms}) => {
 	if (rooms.length === 0) {
-		return <div> no chat rooms, go ahead and make one </div>;
+		return <div className='room-list'> no chat rooms, go ahead and make one </div>;
 	}
 
-	return <table>
+	return <table className='room-list'>
 	 	<thead>
 	    <tr>
 	      <th>Name</th>
 	      <th># Users</th>
+	      <th></th>
 	    </tr>
   	</thead>
     <tbody>
@@ -40,8 +41,8 @@ class Lobby extends Component {
 
 	render() {
 		return <div className='lobby'>
-			<CreateChatRoom createRoom={this.props.createRoom} />
 			<RoomList rooms={this.props.lobby.rooms} />
+			<CreateChatRoom createRoom={this.props.createRoom} />
 		</div>
 	}
 };

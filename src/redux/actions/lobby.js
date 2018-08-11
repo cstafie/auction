@@ -4,6 +4,12 @@ export const UPDATE_ROOM = '[lobby] Update room';
 export const DESTROY_ROOM = '[lobby] Destroy room';
 export const USER_JOINED_ROOM = '[lobby] User joined room';
 export const USER_LEFT_ROOM = '[lobby] User left room';
+export const SET_ROOMS = '[lobby] Set rooms';
+
+export const setRooms = rooms => ({
+	type: SET_ROOMS,
+	payload: rooms,
+});
 
 export const createRoom = roomName => ({
 	type: CREATE_ROOM,

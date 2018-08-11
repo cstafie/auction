@@ -9,3 +9,7 @@ body {
 	display: flex;
 	justify-content: center;
 }
+
+.room-list {
+	margin-bottom: 40px;
+}
