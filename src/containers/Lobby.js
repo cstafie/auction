@@ -1,22 +1,27 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Input from '../components/Input';
+import Spinner from '../components/Spinner';
 import { createRoom } from '../redux/actions/lobby';
+import { push } from 'connected-react-router';
 
 const CreateChatRoom = ({createRoom}) =>
   <Input labelText='room name'
          buttonText='create room'
          handleSubmit={createRoom} />;
 
-const Room = ({id, name, numUsers}) => 
-	<tr key={id}>
+const Room = ({id, name, numUsers, push}) => 
+	<tr>
     <td>{name}</td>
     <td>{numUsers}</td>
-    <td> <button> join </button> </td>
+    <td> 
+    	<button onClick={() => push(`/room${id}`)}> 
+    		join 
+			</button> 
+		</td>
   </tr>;
 
-
-const RoomList = ({rooms}) => {
+const RoomList = ({rooms, push}) => {
 	if (rooms.length === 0) {
 		return <div className='room-list'> no chat rooms, go ahead and make one </div>;
 	}
@@ -30,18 +35,21 @@ const RoomList = ({rooms}) => {
 	    </tr>
   	</thead>
     <tbody>
-    	{rooms.map(Room)}
+    	{rooms.map(room => <Room key={room.id} {...room} push={push} />)}
     </tbody>
 	</table>
 };
 
-
-
 class Lobby extends Component {
 
-	render() {
+	render() {	
+
+		if (this.props.lobby.loading) {
+			return <Spinner />
+		}
+
 		return <div className='lobby'>
-			<RoomList rooms={this.props.lobby.rooms} />
+			<RoomList rooms={this.props.lobby.rooms} push={this.props.push} />
 			<CreateChatRoom createRoom={this.props.createRoom} />
 		</div>
 	}
@@ -52,5 +60,6 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps, {
-	createRoom
+	createRoom,
+	push,
 })(Lobby);

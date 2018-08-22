@@ -2,8 +2,11 @@ import {
 	CREATE_ROOM, 
 	USER_JOINED_ROOM,
 	USER_LEFT_ROOM,
+	GET_ROOMS,
+	SET_ROOMS,
+	startLoadingLobby,
+	finishLoadingLobby,
 	updateRoom,
-	addRoom,
 	destroyRoom,
 } from '../actions/lobby';
 import { socketSend } from '../actions/socket';
@@ -11,25 +14,33 @@ import { socketSend } from '../actions/socket';
 const lobby = ({dispatch, getState}) => next => action => {
 	next(action);
 
-	if (action.type === CREATE_ROOM) {
-		dispatch(socketSend(action));
-
-		// let id = getState().lobby.rooms.length;
-		// let room = {
-		// 	id,
-		// 	name: action.payload,
-		// 	numUsers: 0,
-		// }
-		// dispatch(addRoom(room));
-	} else if (action.type === USER_JOINED_ROOM) {
-		let room = getState().lobby.rooms[action.payload];
-		room.numUsers++;
-		dispatch(updateRoom(room));
-	} else if (action.type === USER_LEFT_ROOM) {
-		let room = getState().lobby.rooms[action.payload];
-		room.numUsers--;
-		dispatch(room.numUsers ? updateRoom(room) : destroyRoom(room.id));
+	const ACTION_MAP = {
+		[GET_ROOMS]: () => {
+			dispatch(startLoadingLobby());
+			dispatch(socketSend(action));
+		},
+		[SET_ROOMS]: () => {
+			dispatch(finishLoadingLobby());
+		},
+		[CREATE_ROOM]: () => {
+			dispatch(socketSend(action));
+		},
+		[USER_JOINED_ROOM]: () => {
+			let room = getState().lobby.rooms[action.payload];
+			room.numUsers++;
+			dispatch(updateRoom(room));
+		},
+		[USER_LEFT_ROOM]: () => {
+			let room = getState().lobby.rooms[action.payload];
+			room.numUsers--;
+			dispatch(room.numUsers ? updateRoom(room) : destroyRoom(room.id));
+		}
 	}
+
+	if (ACTION_MAP.hasOwnProperty(action.type)) {
+		ACTION_MAP[action.type]();
+	}
+
 }; 
 
 

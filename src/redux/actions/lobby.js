@@ -5,6 +5,26 @@ export const DESTROY_ROOM = '[lobby] Destroy room';
 export const USER_JOINED_ROOM = '[lobby] User joined room';
 export const USER_LEFT_ROOM = '[lobby] User left room';
 export const SET_ROOMS = '[lobby] Set rooms';
+export const GET_ROOMS = '[lobby] Get rooms';
+export const CONNECT_TO_LOBBY = '[lobby] Connect to lobby';
+export const START_LOADING_LOBBY = '[lobby] Start loading lobby';
+export const FINISH_LOADING_LOBBY = '[lobby] Finish loading lobby';
+
+export const startLoadingLobby = () => ({
+	type: START_LOADING_LOBBY,
+});
+
+export const finishLoadingLobby = () => ({
+	type: FINISH_LOADING_LOBBY,
+});
+
+export const connectToLobby = () => ({
+	type: CONNECT_TO_LOBBY,
+});
+
+export const getRooms = () => ({
+	type: GET_ROOMS
+});
 
 export const setRooms = rooms => ({
 	type: SET_ROOMS,

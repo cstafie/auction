@@ -4,6 +4,7 @@ import socketio from 'socket.io';
 import { store } from './redux/store';
 import { socketReceive } from './redux/actions/socket';
 import { connectUser, disconnectUser } from './redux/actions/users';
+import { setRooms } from '../src/redux/actions/lobby';
 
 const app = express();
 const server = http.Server(app);
@@ -22,24 +23,29 @@ const lobby = io
   .of(LOBBY_CHANNEL)
   .on('connection', (socket) => {
     console.log('user connected to lobby');
-    store.dispatch(connectUser(socket));
 
     socket.on(LOBBY_KEY, (action) => {
+      action.socket = socket;
       store.dispatch(action);
     });
 
     socket.on('disconnect', () => {
       console.log('user disconnected from lobby');
-      store.dispatch(disconnectUser(socket))
+      socket.leave(LOBBY_CHANNEL);
+      //store.dispatch(disconnectUser(socket));
     }); 
   });
 
-
-const sendToAllInLobby = (action) => {
-  lobby.emit(LOBBY_CHANNEL).emit(LOBBY_KEY, action); 
+const sendToLobbySender = (socket, action) => {
+  socket.emit(LOBBY_KEY, action);
 };
 
-export { sendToAllInLobby };
+const sendToAllInLobby = (action) => {
+  console.log('sending to all in lobby', action);
+  lobby.emit(LOBBY_KEY, action); 
+};
+
+export { sendToAllInLobby, io, sendToLobbySender  };
 
 
 

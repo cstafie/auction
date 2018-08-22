@@ -2,7 +2,12 @@ import React, { Component } from 'react';
 
 class Input extends Component {
   state = {text: ''};
-  handleText = ({target}) => this.setState({text: target.value});
+  
+  handleText({target}) {
+
+    this.setState({text: target.value});
+  }
+
   handleSubmit() {
     if (this.state.text) {
       this.props.handleSubmit(this.state.text);
@@ -23,7 +28,7 @@ class Input extends Component {
         <input 
           name='text' 
           value={this.state.text}
-          onChange={this.handleText}
+          onChange={this.handleText.bind(this)}
           type='text' 
           onKeyPress={(event) => this.handleKeyPress(event)}/>
         <button onClick={() => this.handleSubmit()}>
