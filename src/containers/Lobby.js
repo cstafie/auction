@@ -49,7 +49,7 @@ class Lobby extends Component {
 		}
 
 		return <div className='lobby'>
-			<RoomList rooms={this.props.lobby.rooms} push={this.props.push} />
+			<RoomList rooms={Object.values(this.props.lobby.rooms)} push={this.props.push} />
 			<CreateChatRoom createRoom={this.props.createRoom} />
 		</div>
 	}

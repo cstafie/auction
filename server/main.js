@@ -53,9 +53,7 @@ export { sendToAllInLobby, io, sendToLobbySender  };
 // let colors = ['red', 'blue', 'green'];
 // let socketUsers = [];
 
-// let makeUserID = () => {
-// 	return '_' + Math.random().toString(36).substr(2, 9);
-// }
+
 
 // let makeNewUser = (userName) => {
 // 	if (colors.length && userName) {

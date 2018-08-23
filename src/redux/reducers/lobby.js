@@ -9,7 +9,7 @@ import {
 
 const defaultState = {
   loading: false,
-  rooms: [],
+  rooms: {},
 }
 
 const lobby = (state = defaultState, action) => {
@@ -25,31 +25,21 @@ const lobby = (state = defaultState, action) => {
         loading: false,
       }
     case ADD_ROOM:
-      return {
-        ...state,
-        rooms: [
-          ...state.rooms,
-          action.payload
-        ]
-      };
     case UPDATE_ROOM:
-      let room = action.payload;
       return {
         ...state,
-        rooms: [
-          ...state.rooms.slice(0, room.id),
-          room,
-          ...state.rooms.slice(room.id + 1),
-        ]
+        rooms: {
+          ...state.rooms,
+          [action.payload.id]: action.payload,
+        }
       };
     case DESTROY_ROOM:
-      let id = action.payload;
+      const id = action.payload;
+      let rooms = {...state.rooms};
+      delete rooms[id];
       return {
         ...state,
-        rooms: [
-          ...state.rooms.slice(0,id),
-          ...state.rooms.slice(id + 1),
-        ]
+        rooms,
       };
     case SET_ROOMS: 
       return {

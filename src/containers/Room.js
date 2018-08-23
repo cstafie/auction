@@ -32,7 +32,7 @@ class Room extends Component {
 
     return (
       <div>
-        <div> Welcome to room {this.state.room.id} </div>
+        <div> Welcome to room {this.state.room.name} </div>
       </div>
     );
   }

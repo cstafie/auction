@@ -17,13 +17,26 @@ import { sendToAllInLobby, sendToLobbySender, io } from '../../main';
 
 const ROOM_KEY = 'ROOM';
 
+const makeID = () => {
+	return '_' + Math.random().toString(36).substr(2, 9);
+};
+
+const copyRoom = (room) => { // copy to send to front end without channel
+	return {
+		id: room.id,
+		name: room.name,
+		numUsers: room.numUsers,
+		url: room.url,
+	}
+};
+
 const lobby = ({dispatch, getState}) => next => action => {
   next(action);
 
   console.log(action);
 
  	if (action.type === CREATE_ROOM) {	
-		const id = getState().lobby.rooms.length;
+		let id = makeID();
 		const ROOM_CHANNEL = `/room${id}`;
 
 		const channel = io
@@ -55,25 +68,28 @@ const lobby = ({dispatch, getState}) => next => action => {
 
 		dispatch(addRoom({...room, channel}));
 		sendToAllInLobby(addRoom(room));
+
  	} else if (action.type === GET_ROOMS) {
- 		let rooms = getState().lobby.rooms.map(room => {
- 			let roomCopy = {...room};
- 			delete roomCopy.channel;
- 			return roomCopy;
- 		});
- 		sendToLobbySender(action.socket, setRooms(rooms));
+ 		let roomsCopy = {};
+ 		let rooms = getState().lobby.rooms;
+
+ 		for (let id of Object.keys(rooms)) {
+ 			roomsCopy[id] = copyRoom(rooms[id]);
+ 		}
+ 		sendToLobbySender(action.socket, setRooms(roomsCopy));
+
  	} else if (action.type === USER_JOINED_ROOM) {
  		let room = getState().lobby.rooms[action.payload];
-			room.numUsers++;
-			dispatch(updateRoom(room));
+		room.numUsers++;
+		dispatch(updateRoom(room));
+
  	} else if (action.type === USER_LEFT_ROOM) {
  		let room = getState().lobby.rooms[action.payload];
 		room.numUsers--;
 		dispatch(room.numUsers > 0 ? updateRoom(room) : destroyRoom(room.id));
+
  	} else if (action.type === UPDATE_ROOM) {
- 		let roomCopy = {...action.payload};
- 		delete roomCopy.channel;
- 		sendToAllInLobby(updateRoom(roomCopy));
+ 		sendToAllInLobby(updateRoom(copyRoom(action.payload)));
  	} else if (action.type === DESTROY_ROOM) {
  		sendToAllInLobby(action);
  	}
