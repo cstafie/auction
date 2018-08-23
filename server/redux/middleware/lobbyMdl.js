@@ -1,9 +1,15 @@
 import { 
 	CREATE_ROOM, 
 	GET_ROOMS,
+	USER_JOINED_ROOM,
+	USER_LEFT_ROOM,
+	DESTROY_ROOM,
+	UPDATE_ROOM,
 	setRooms,
 	addRoom, 
 	userJoinedRoom, 
+	updateRoom,
+	destroyRoom,
 	userLeftRoom } from '../../../src/redux/actions/lobby';
 import { CONNECT_USER } from '../actions/users';
 import { sendToAllInLobby, sendToLobbySender, io } from '../../main';
@@ -24,8 +30,8 @@ const lobby = ({dispatch, getState}) => next => action => {
 			.of(ROOM_CHANNEL)
 		  .on('connection', (socket) => {
 		    console.log(`user connected to room ${id}`);
-		    store.dispatch(userJoinedRoom(id));
-		    sendToAllInLobby(userJoinedRoom(id));
+		    dispatch(userJoinedRoom(id));
+		    //sendToAllInLobby(userJoinedRoom(id));
 
 		    socket.on(ROOM_KEY, (action) => {
 		      store.dispatch(action);
@@ -33,8 +39,8 @@ const lobby = ({dispatch, getState}) => next => action => {
 
 		    socket.on('disconnect', () => {
 		      console.log(`user disconnected from room ${id}`);
-		      store.dispatch(userLeftRoom(id));
-		      sendToAllInLobby(userLeftRoom(id));
+		      dispatch(userLeftRoom(id));
+		      //sendToAllInLobby(userLeftRoom(id));
 		      socket.leave(ROOM_CHANNEL);
 		      //store.dispatch(disconnectUser(socket));
 		    });
@@ -56,6 +62,20 @@ const lobby = ({dispatch, getState}) => next => action => {
  			return roomCopy;
  		});
  		sendToLobbySender(action.socket, setRooms(rooms));
+ 	} else if (action.type === USER_JOINED_ROOM) {
+ 		let room = getState().lobby.rooms[action.payload];
+			room.numUsers++;
+			dispatch(updateRoom(room));
+ 	} else if (action.type === USER_LEFT_ROOM) {
+ 		let room = getState().lobby.rooms[action.payload];
+		room.numUsers--;
+		dispatch(room.numUsers > 0 ? updateRoom(room) : destroyRoom(room.id));
+ 	} else if (action.type === UPDATE_ROOM) {
+ 		let roomCopy = {...action.payload};
+ 		delete roomCopy.channel;
+ 		sendToAllInLobby(updateRoom(roomCopy));
+ 	} else if (action.type === DESTROY_ROOM) {
+ 		sendToAllInLobby(action);
  	}
 }
 

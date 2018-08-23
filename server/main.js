@@ -41,7 +41,6 @@ const sendToLobbySender = (socket, action) => {
 };
 
 const sendToAllInLobby = (action) => {
-  console.log('sending to all in lobby', action);
   lobby.emit(LOBBY_KEY, action); 
 };
 

@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import Chat from '../containers/Chat';
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
-import { connectToRoom } from '../redux/actions/room';
+import { 
+  connectToRoom,
+  disconnectFromRoom,
+} from '../redux/actions/room';
 
 const RoomNotFound = ({push}) => 
 <div> 
@@ -17,7 +20,9 @@ class Room extends Component {
     let roomId = this.props.match.params.id;
     let room = this.props.rooms[roomId];
     this.setState({room});
-		this.props.connectToRoom(room);
+    if (room) {
+      this.props.connectToRoom(room);
+    }
 	}	
 
   render() {
@@ -31,6 +36,12 @@ class Room extends Component {
       </div>
     );
   }
+
+  componentWillUnmount() {
+    if (this.state.room) {
+      this.props.disconnectFromRoom(this.state.room);
+    }
+  }
 };
 
 const mapStateToProps = state => ({
@@ -39,5 +50,6 @@ const mapStateToProps = state => ({
 
 export default connect(mapStateToProps, {
   push,
-  connectToRoom
+  connectToRoom,
+  disconnectFromRoom,
 })(Room);
