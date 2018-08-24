@@ -1,7 +1,7 @@
 import io from 'socket.io-client';
 import { 
 	SOCKET_RECEIVE, 
-	SOCKET_SEND, 
+	SEND_TO_LOBBY, 
 	socketReceive,
 } from '../actions/socket';
 import { 
@@ -25,20 +25,14 @@ const connectToSocket = ({dispatch}) => next => action => {
 	}
 }
 
-const socketDecapsulator = ({dispatch}) => next => action => {
+const socketTunnel = ({dispatch}) => next => action => {
   next(action);
 
  	if (action.type === SOCKET_RECEIVE) {
  		dispatch(action.payload); // TODO: assert action payload is always an action
- 	}
-}
-
-const socketEncapsulator = ({dispatch}) => next => action => {
-  next(action);
-  
-  if (action.type === SOCKET_SEND) { // TODO: look at socket.io for error handling
+ 	} else if (action.type === SEND_TO_LOBBY) { // TODO: look at socket.io for error handling
   	socketConnection.emit(LOBBY_KEY, action.payload); // TODO: assert action payload is always an action
   }
-};
+}
 
-export const socketMdl = [connectToSocket, socketDecapsulator, socketEncapsulator];
+export const socketMdl = [connectToSocket, socketTunnel];

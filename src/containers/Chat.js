@@ -1,32 +1,35 @@
-import React, { Component } from 'react';
+import React  from 'react';
 import Input from '../components/Input';
-import { connect } from 'react-redux';
-import { sendMessage } from '../redux/actions/chat';
+// import { connect } from 'react-redux';
 
-const UserName = ({userName, color}) =>
-  <span style={{color}}> {userName} </span>;
+const Username = ({username}) =>
+  <span style={{color: 'purple'}}> {username} </span>;
 
-const Message = ({userName, color, message}) =>
-  <div> <UserName userName={userName} color={color} /> {message} </div>
+const Message = ({username, message}) =>
+  <div> <Username username={username}/> {message} </div>
 
-class Chat extends Component {
+const Chat = ({messages, createMessage}) =>
+  <div> 
+    {messages.map((message, index) => <Message key={index} {...message} />)} 
+    <Input 
+      buttonText='Send'
+      handleSubmit={createMessage} />
+  </div>
 
-  render() {
-    return (
-      <div> 
-        {this.props.messages.map((message, index) => 
-          <Message key={index} {...message} /> )} 
-        <Input buttonText='send'
-               handleSubmit={this.props.sendMessage} />
-      </div>
-    );
-  }
-}
+export default Chat;
+// class Chat extends Component {
 
-const mapStateToProps = state => ({
-  messages: state.chat,
-});
+//   render() {
+//     return (
+      
+//     );
+//   }
+// }
 
-export default connect(mapStateToProps, {
-  sendMessage
-})(Chat);
+// // const mapStateToProps = state => ({
+// //   messages: state.chat,
+// // });
+
+// // export default connect(mapStateToProps, {
+// //   sendMessage
+// })(Chat);

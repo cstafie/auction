@@ -1,5 +1,5 @@
 export const SOCKET_RECEIVE = '[socket] Receive';
-export const SOCKET_SEND = '[socket] Send';
+export const SEND_TO_LOBBY = '[socket] Send to Lobby';
 
 
 export const socketReceive = action => ({
@@ -7,7 +7,7 @@ export const socketReceive = action => ({
 	payload: action,
 });
 
-export const socketSend = action => ({
-	type: SOCKET_SEND,
+export const sendToLobby = action => ({
+	type: SEND_TO_LOBBY,
 	payload: action,
 });

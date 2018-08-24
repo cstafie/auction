@@ -5,7 +5,7 @@ import {
 	startLoadingLobby,
 	finishLoadingLobby
 } from '../actions/lobby';
-import { socketSend } from '../actions/socket';
+import { sendToLobby } from '../actions/socket';
 
 const lobby = ({dispatch, getState}) => next => action => {
 	next(action);
@@ -13,13 +13,13 @@ const lobby = ({dispatch, getState}) => next => action => {
 	const ACTION_MAP = {
 		[GET_ROOMS]: () => {
 			dispatch(startLoadingLobby());
-			dispatch(socketSend(action));
+			dispatch(sendToLobby(action));
 		},
 		[SET_ROOMS]: () => {
 			dispatch(finishLoadingLobby());
 		},
 		[CREATE_ROOM]: () => {
-			dispatch(socketSend(action));
+			dispatch(sendToLobby(action));
 		},
 	}
 
