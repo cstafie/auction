@@ -26,7 +26,7 @@ const room = (state = defaultState, action) => {
       return {
         ...state,
         messages: [
-          ...state.chat,
+          ...state.messages,
           action.payload,
         ],
       };

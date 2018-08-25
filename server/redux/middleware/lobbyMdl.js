@@ -11,9 +11,7 @@ import {
 	updateRoom,
 	destroyRoom,
 	userLeftRoom } from '../../../src/redux/actions/lobby';
-import { CONNECT_USER } from '../actions/users';
 import { sendToAllInLobby, sendToLobbySender, io } from '../../main';
-// import { emitSocketAction } from '../../main';
 
 const ROOM_KEY = 'ROOM';
 
@@ -33,7 +31,7 @@ const copyRoom = (room) => { // copy to send to front end without channel
 const lobby = ({dispatch, getState}) => next => action => {
   next(action);
 
-  console.log(action);
+  //console.log(action);
 
  	if (action.type === CREATE_ROOM) {	
 		let id = makeID();
@@ -44,18 +42,18 @@ const lobby = ({dispatch, getState}) => next => action => {
 		  .on('connection', (socket) => {
 		    console.log(`user connected to room ${id}`);
 		    dispatch(userJoinedRoom(id));
-		    //sendToAllInLobby(userJoinedRoom(id));
 
 		    socket.on(ROOM_KEY, (action) => {
-		      store.dispatch(action);
+		    	console.log('attaching id to action', id, action);
+		    	action.roomId = id;
+		    	action.socket = socket;
+		      dispatch(action);
 		    });
 
 		    socket.on('disconnect', () => {
 		      console.log(`user disconnected from room ${id}`);
 		      dispatch(userLeftRoom(id));
-		      //sendToAllInLobby(userLeftRoom(id));
 		      socket.leave(ROOM_CHANNEL);
-		      //store.dispatch(disconnectUser(socket));
 		    });
     	});
 
@@ -63,11 +61,13 @@ const lobby = ({dispatch, getState}) => next => action => {
 			id,
 			name: action.payload,
 			numUsers: 0,
-			url: `http://localhost:3001/room${id}`
+			url: `http://192.168.0.8:3001/room${id}`,
+			channel,
+			messages: [],
 		}
 
-		dispatch(addRoom({...room, channel}));
-		sendToAllInLobby(addRoom(room));
+		dispatch(addRoom(room));
+		sendToAllInLobby(addRoom(copyRoom(room)));
 
  	} else if (action.type === GET_ROOMS) {
  		let roomsCopy = {};
@@ -94,6 +94,5 @@ const lobby = ({dispatch, getState}) => next => action => {
  		sendToAllInLobby(action);
  	}
 }
-
 
 export const lobbyMdl = [lobby];
