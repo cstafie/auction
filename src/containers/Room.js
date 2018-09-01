@@ -25,7 +25,7 @@ class Room extends Component {
     if (room) {
       this.props.connectToRoom(room);
     }
-	}	
+	}	 
 
   render() {
     if (!this.state.room) {

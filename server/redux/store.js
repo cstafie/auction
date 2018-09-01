@@ -5,10 +5,12 @@ import { reducers } from './reducers';
 // import { chatMdl } from './middleware/chatMdl';
 import { lobbyMdl } from './middleware/lobbyMdl';
 import { roomMdl } from './middleware/roomMdl';
+import { loggingMdl } from './middleware/loggingMdl';
 
 export const store = createStore(
   reducers,
   applyMiddleware(
+  	...loggingMdl,
   	...lobbyMdl,
   	...roomMdl,
 	),

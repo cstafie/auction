@@ -8,6 +8,7 @@ import {
 const defaultState = {
   loading: false,
   messages: [],
+  //game: gameReducer()
 }
 
 const room = (state = defaultState, action) => {

@@ -10,7 +10,7 @@ import {
 } from '../actions/lobby';
 
 const LOBBY_KEY = 'LOBBY';
-const LOBBY = 'http://192.168.0.8:3001/lobby';
+const LOBBY = 'http://localhost:3001/lobby';
 let socketConnection = undefined;
 
 const connectToSocket = ({dispatch}) => next => action => {
@@ -19,6 +19,7 @@ const connectToSocket = ({dispatch}) => next => action => {
 	if (action.type === CONNECT_TO_LOBBY) {
 		socketConnection = io(LOBBY);
 		socketConnection.on(LOBBY_KEY, action => {
+			console.log('hello!!!');
 			dispatch(socketReceive(action));
 		});
 		dispatch(getRooms());

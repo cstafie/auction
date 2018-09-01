@@ -11,8 +11,17 @@ import {
 	updateRoom,
 	destroyRoom,
 	userLeftRoom } from '../../../src/redux/actions/lobby';
-import { sendToAllInLobby, sendToLobbySender, io } from '../../main';
+import {
+	START_LOBBY,
+	SEND_TO_ALL_IN_LOBBY,
+	SEND_TO_LOBBY_SOCKET,
+	sendToAllInLobby,
+	sendToLobbySocket,
+	setLobbyChannel,
+} from '../actions/lobby';
 
+const LOBBY_CHANNEL = '/lobby';
+const LOBBY_KEY = 'LOBBY';
 const ROOM_KEY = 'ROOM';
 
 const makeID = () => {
@@ -31,13 +40,31 @@ const copyRoom = (room) => { // copy to send to front end without channel
 const lobby = ({dispatch, getState}) => next => action => {
   next(action);
 
-  //console.log(action);
+  if (action.type === START_LOBBY) {
 
- 	if (action.type === CREATE_ROOM) {	
+  	const lobbyChannel = getState().lobby.io
+		  .of(LOBBY_CHANNEL)
+		  .on('connection', (socket) => {
+		    console.log('user connected to lobby');
+
+		    socket.on(LOBBY_KEY, (action) => {
+		      action.socket = socket;
+		      dispatch(action);
+		    });
+
+		    socket.on('disconnect', () => {
+		      console.log('user disconnected from lobby');
+		      socket.leave(LOBBY_CHANNEL);
+		    }); 
+		  });
+
+		dispatch	(setLobbyChannel(lobbyChannel));
+
+  } else if (action.type === CREATE_ROOM) {	
 		let id = makeID();
 		const ROOM_CHANNEL = `/room${id}`;
 
-		const channel = io
+		const channel = getState().lobby.io
 			.of(ROOM_CHANNEL)
 		  .on('connection', (socket) => {
 		    console.log(`user connected to room ${id}`);
@@ -55,28 +82,35 @@ const lobby = ({dispatch, getState}) => next => action => {
 		      dispatch(userLeftRoom(id));
 		      socket.leave(ROOM_CHANNEL);
 		    });
-    	});
+	  	});
 
 		const room = {
 			id,
 			name: action.payload,
 			numUsers: 0,
-			url: `http://192.168.0.8:3001/room${id}`,
+			url: `http://localhost:3001/room${id}`,
 			channel,
 			messages: [],
 		}
 
 		dispatch(addRoom(room));
-		sendToAllInLobby(addRoom(copyRoom(room)));
+		dispatch(sendToAllInLobby(addRoom(copyRoom(room))));
 
- 	} else if (action.type === GET_ROOMS) {
+ 	} else if (action.type === SEND_TO_ALL_IN_LOBBY) {
+ 		getState().lobby.channel.emit(LOBBY_KEY, action.payload);
+
+	} else if (action.type === SEND_TO_LOBBY_SOCKET) {
+		action.payload.socket.emit(LOBBY_KEY, action.payload.action);
+
+	} else if (action.type === GET_ROOMS) {
  		let roomsCopy = {};
  		let rooms = getState().lobby.rooms;
 
  		for (let id of Object.keys(rooms)) {
  			roomsCopy[id] = copyRoom(rooms[id]);
  		}
- 		sendToLobbySender(action.socket, setRooms(roomsCopy));
+
+ 		dispatch(sendToLobbySocket(action.socket, setRooms(roomsCopy)));
 
  	} else if (action.type === USER_JOINED_ROOM) {
  		let room = getState().lobby.rooms[action.payload];
@@ -89,9 +123,9 @@ const lobby = ({dispatch, getState}) => next => action => {
 		dispatch(room.numUsers > 0 ? updateRoom(room) : destroyRoom(room.id));
 
  	} else if (action.type === UPDATE_ROOM) {
- 		sendToAllInLobby(updateRoom(copyRoom(action.payload)));
+ 		dispatch(sendToAllInLobby(updateRoom(copyRoom(action.payload))));
  	} else if (action.type === DESTROY_ROOM) {
- 		sendToAllInLobby(action);
+ 		dispatch(sendToAllInLobby(action));
  	}
 }
 

@@ -4,13 +4,19 @@ import {
   DESTROY_ROOM,
 } from '../../../src/redux/actions/lobby';
 import {
+  START_LOBBY,
+  SET_LOBBY_CHANNEL,
+} from '../actions/lobby';
+import {
   ADD_MESSAGE,
 } from '../../../src/redux/actions/room';
 import roomReducer from './room';
 
 const defaultState = {
+  io: undefined,
+  channel: undefined,
   rooms: {},
-}
+};
 
 const lobby = (state = defaultState, action) => {
   switch (action.type) {  
@@ -34,7 +40,6 @@ const lobby = (state = defaultState, action) => {
     }
     case ADD_MESSAGE: {
       const id = action.roomId;
-      console.log('add message', id); 
       return {
         ...state,
         rooms: {
@@ -43,10 +48,22 @@ const lobby = (state = defaultState, action) => {
         }
       }
     }
+    case SET_LOBBY_CHANNEL: {
+      return {
+        ...state,
+        channel: action.payload,
+      }
+    }
+    case START_LOBBY: {
+      return {
+        ...state,
+        io: action.payload,
+      }
+    }
     default:
       return state;
   }
-}
+};
 
 export default lobby;
 

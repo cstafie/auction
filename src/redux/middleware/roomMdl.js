@@ -25,17 +25,13 @@ const room = ({dispatch, getState}) => next => action => {
 		socketConnection.on(ROOM_KEY, action => {
 			dispatch(socketReceive(action));
 		});
-		console.log('dispatching get messages');
 		dispatch(getMessages(room.id));
 	} else if (action.type === DISCONNECT_FROM_ROOM) {
-		console.log('trying to disconnect!!!');
 		socketConnection.disconnect();
 		socketConnection = undefined;
 	} else if (action.type === SEND_TO_ROOM) {
-		console.log('action sent to room', action);
 		socketConnection.emit(ROOM_KEY, action.payload);
 	} else if (action.type === GET_MESSAGES) {
-		console.log('get messages found in middleware')
 		dispatch(startLoadingRoom());
 		dispatch(sendToRoom(action));
 	} else if (action.type === SET_MESSAGES) {
