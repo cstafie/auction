@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Chat from '../containers/Chat';
 import Spinner from '../components/Spinner';
+import Game from '../components/Game';
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
 import { 
@@ -35,11 +36,12 @@ class Room extends Component {
     }
 
     return (
-      <div>
-        <div> Welcome to room {this.state.room.name} </div>
+      <div className='room'>
+       {/* <div> Welcome to room {this.state.room.name} </div> */}
         <Chat 
           messages={this.props.room.messages}
           createMessage={this.props.createMessage} />
+        <Game />
       </div>
     );
   }

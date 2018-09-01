@@ -10,6 +10,10 @@ body {
 	justify-content: center;
 }
 
+.room {
+  display: flex;
+}
+
 .room-list {
 	margin-bottom: 40px;
 }

@@ -19,7 +19,6 @@ const connectToSocket = ({dispatch}) => next => action => {
 	if (action.type === CONNECT_TO_LOBBY) {
 		socketConnection = io(LOBBY);
 		socketConnection.on(LOBBY_KEY, action => {
-			console.log('hello!!!');
 			dispatch(socketReceive(action));
 		});
 		dispatch(getRooms());

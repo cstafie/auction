@@ -58,7 +58,7 @@ const lobby = ({dispatch, getState}) => next => action => {
 		    }); 
 		  });
 
-		dispatch	(setLobbyChannel(lobbyChannel));
+		dispatch(setLobbyChannel(lobbyChannel));
 
   } else if (action.type === CREATE_ROOM) {	
 		let id = makeID();
@@ -71,7 +71,6 @@ const lobby = ({dispatch, getState}) => next => action => {
 		    dispatch(userJoinedRoom(id));
 
 		    socket.on(ROOM_KEY, (action) => {
-		    	console.log('attaching id to action', id, action);
 		    	action.roomId = id;
 		    	action.socket = socket;
 		      dispatch(action);

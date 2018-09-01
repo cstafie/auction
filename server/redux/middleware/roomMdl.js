@@ -25,10 +25,15 @@ const room = ({dispatch, getState}) => next => action => {
   if (action.type === SEND_TO_ROOM_SOCKET) {
   	action.payload.socket.emit(ROOM_KEY, action.payload.action);
   } else if (action.type === SEND_TO_ALL_IN_ROOM) {
-  
+
   	action.payload.roomChannel.emit(ROOM_KEY, action.payload.action);
   } else if (action.type === CREATE_MESSAGE) {	
- 		const message = action.payload;
+  	const username = getState().users.socketToUser[action.socket];
+ 		const message = {
+ 			message: action.payload,
+ 			username: username ? username : '[incognito]',
+ 		} 
+
 		dispatch(enhanceAction(addMessage(message)));
 		dispatch(sendToAllInRoom(
 			getState().lobby.rooms[action.roomId].channel,

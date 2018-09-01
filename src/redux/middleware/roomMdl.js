@@ -37,11 +37,6 @@ const room = ({dispatch, getState}) => next => action => {
 	} else if (action.type === SET_MESSAGES) {
 		dispatch(finishLoadingRoom());
 	} else if (action.type === CREATE_MESSAGE) {
-		let username = getState().user.username;
-		action.payload = {
-			message: action.payload,
-			username: username ? username : '[incongito]',
-		}
 		dispatch(sendToRoom(action));
 	}
 }
