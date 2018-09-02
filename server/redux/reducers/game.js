@@ -22,7 +22,7 @@ const defaultState = {
 	state: WAITING_FOR_PLAYERS,
 };
 
-const game = (state = defaultState, action) => {
+const game = (state = defaultState, action={}) => {
 	switch (action.type) {
 		case SIT_DOWN: 
 

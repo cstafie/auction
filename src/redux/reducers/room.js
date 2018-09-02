@@ -5,13 +5,15 @@ import {
   FINISH_LOADING_ROOM,
 } from '../actions/room';
 
+import gameReducer from './game';
+
 const defaultState = {
   loading: false,
   messages: [],
-  //game: gameReducer()
+  game: gameReducer(),
 }
 
-const room = (state = defaultState, action) => {
+const room = (state = defaultState, action={}) => {
   switch (action.type) {
     case START_LOADING_ROOM:
       return {

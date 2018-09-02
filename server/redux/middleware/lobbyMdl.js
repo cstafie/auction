@@ -20,6 +20,10 @@ import {
 	setLobbyChannel,
 } from '../actions/lobby';
 
+import {
+	createLogMessage,
+} from '../actions/room';
+
 const LOBBY_CHANNEL = '/lobby';
 const LOBBY_KEY = 'LOBBY';
 const ROOM_KEY = 'ROOM';
@@ -67,18 +71,23 @@ const lobby = ({dispatch, getState}) => next => action => {
 		const channel = getState().lobby.io
 			.of(ROOM_CHANNEL)
 		  .on('connection', (socket) => {
-		    console.log(`user connected to room ${id}`);
-		    dispatch(userJoinedRoom(id));
 
-		    socket.on(ROOM_KEY, (action) => {
-		    	action.roomId = id;
+		  	const enhanceAction = (action) => {
+		  		action.roomChannel = channel;
+		  		action.roomId = id;
 		    	action.socket = socket;
-		      dispatch(action);
-		    });
+		    	return action;
+		  	}
+
+		    //console.log(`user connected to room ${id}`);
+		    dispatch(enhanceAction(userJoinedRoom(id)));
+		    dispatch(enhanceAction(createLogMessage('user joined room'))); // TODO: fix how gross this is
+
+		    socket.on(ROOM_KEY, (action) => dispatch(enhanceAction(action)));
 
 		    socket.on('disconnect', () => {
-		      console.log(`user disconnected from room ${id}`);
-		      dispatch(userLeftRoom(id));
+		      //console.log(`user disconnected from room ${id}`);
+		      dispatch(enhanceAction(userLeftRoom(id)));
 		      socket.leave(ROOM_CHANNEL);
 		    });
 	  	});

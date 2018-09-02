@@ -7,6 +7,7 @@ import { lobbyMdl } from './middleware/lobbyMdl';
 import { roomMdl } from './middleware/roomMdl';
 import { loggingMdl } from './middleware/loggingMdl';
 import { usersMdl } from './middleware/usersMdl';
+import { gameMdl } from './middleware/gameMdl';
 
 export const store = createStore(
   reducers,
@@ -15,5 +16,6 @@ export const store = createStore(
   	...lobbyMdl,
   	...roomMdl,
   	...usersMdl,
+  	...gameMdl,
 	),
 );

@@ -3,7 +3,7 @@ import React from 'react';
 const Card = ({rank, suit}) => {
 	return <div className='card'>
 		{rank ? rank : 'R'} {suit ? suit : 'S'}
-	</div>
+	</div>;
 };
 
 const Player = ({username, cards}) => {

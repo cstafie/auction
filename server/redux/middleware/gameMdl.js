@@ -10,8 +10,8 @@ import {
 	UPDATE_GAME,
 }	from '../../../src/redux/actions/game';
 
-const game = ({dispatch, getState}, next, action) => {
-
+const game = ({dispatch, getState}) => next => action => {
+	next(action);
 	// if (action.type === REQUEST_SEAT) {
 	// 	let room = getState().lobby.rooms[action.roomId].
 	// }

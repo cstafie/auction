@@ -18,7 +18,7 @@ import gameReducer from './game';
 
 const defaultState = {
 	messages: [],
-	game: gameReducer(undefined, {}),
+	game: gameReducer(),
 };
 
 const room = (state = defaultState, action) => {

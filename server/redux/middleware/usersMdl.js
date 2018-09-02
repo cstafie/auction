@@ -7,7 +7,6 @@ const users = ({dispatch, getState}) => next => action => {
 	next(action);
 
 	if (action.type === CREATE_USER) {
-		console.log("CREATING USER!!!!", action.payload)
 		dispatch(addUser(action.payload, action.socket));
 	}
 };

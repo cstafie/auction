@@ -7,6 +7,7 @@ import {
 import {
 	SEND_TO_ALL_IN_ROOM,
 	SEND_TO_ROOM_SOCKET,
+	CREATE_LOG_MESSAGE,
 	sendToAllInRoom,
 	sendToRoomSocket,
 } from '../actions/room';
@@ -17,8 +18,9 @@ const room = ({dispatch, getState}) => next => action => {
   next(action);
 
   const enhanceAction = (newAction) => {
-  	newAction.roomId = action.roomId;
+  	newAction.roomChannel = action.roomChannel;
   	newAction.socket = action.socket;
+  	newAction.roomId = action.roomId;
   	return newAction;
   }
 
@@ -36,19 +38,29 @@ const room = ({dispatch, getState}) => next => action => {
 
 		dispatch(enhanceAction(addMessage(message)));
 		dispatch(sendToAllInRoom(
-			getState().lobby.rooms[action.roomId].channel,
+			action.roomChannel,
 			addMessage(message)
 		));
 
  	} else if (action.type === GET_MESSAGES) {
 
- 		getState().lobby.rooms[action.roomId]
+ 		//getState().lobby.rooms[action.roomId]
 
  		dispatch(sendToRoomSocket(
  			action.socket,
  			setMessages(getState().lobby.rooms[action.roomId].messages)
 		));
- 	} 
+ 	} else if (action.type === CREATE_LOG_MESSAGE) { // TODO: fix
+ 		const message = {
+ 			username: '[log]',
+	 		message: action.payload,
+ 		}
+ 		dispatch(enhanceAction(addMessage(message)));
+		dispatch(sendToAllInRoom(
+			action.roomChannel,
+			addMessage(message)
+		));
+ 	}
 }
 
 export const roomMdl = [room];
