@@ -30,7 +30,9 @@ const room = ({dispatch, getState}) => next => action => {
 
   	action.payload.roomChannel.emit(ROOM_KEY, action.payload.action);
   } else if (action.type === CREATE_MESSAGE) {	
-  	const username = getState().users.socketToUser[action.socket];
+  	const username = getState().users.socketToUser.get(action.socket.id);
+  	console.log(action.socket.id);
+  	console.log(getState().users.socketToUser.get(action.socket.id));
  		const message = {
  			message: action.payload,
  			username: username ? username : '[incognito]',

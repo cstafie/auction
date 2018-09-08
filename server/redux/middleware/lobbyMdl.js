@@ -19,10 +19,12 @@ import {
 	sendToLobbySocket,
 	setLobbyChannel,
 } from '../actions/lobby';
-
 import {
-	createLogMessage,
+	sendToRoomSocket,
 } from '../actions/room';
+import {
+	getUsername,
+} from '../../../src/redux/actions/user';
 
 const LOBBY_CHANNEL = '/lobby';
 const LOBBY_KEY = 'LOBBY';
@@ -81,7 +83,8 @@ const lobby = ({dispatch, getState}) => next => action => {
 
 		    //console.log(`user connected to room ${id}`);
 		    dispatch(enhanceAction(userJoinedRoom(id)));
-		    dispatch(enhanceAction(createLogMessage('user joined room'))); // TODO: fix how gross this is
+		    dispatch(enhanceAction(sendToRoomSocket(socket, getUsername())));
+		    // TODO: fix how gross this is
 
 		    socket.on(ROOM_KEY, (action) => dispatch(enhanceAction(action)));
 
@@ -96,7 +99,7 @@ const lobby = ({dispatch, getState}) => next => action => {
 			id,
 			name: action.payload,
 			numUsers: 0,
-			url: `http://localhost:3001/room${id}`,
+			url: `http://192.168.2.52:3001/room${id}`,
 			channel,
 			messages: [],
 		}

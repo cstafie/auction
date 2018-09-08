@@ -2,6 +2,7 @@
 // export const DISCONNECT_USER = '[user] Disconnect';
 export const SUBMIT_USERNAME = '[user] Submit Username Event';
 export const UPDATE_USER = '[user] Update';
+export const GET_USERNAME = '[user] Get username'
 
 export const submitUsername = username => ({
 	type: SUBMIT_USERNAME,
@@ -11,6 +12,10 @@ export const submitUsername = username => ({
 export const updateUser = user => ({
 	type: UPDATE_USER,
 	payload: user,
+});
+
+export const getUsername = () => ({
+	type: GET_USERNAME,
 });
 
 
@@ -31,3 +36,4 @@ export const addUser = (username, socket) => ({
 	type: ADD_USER,
 	payload: {username, socket},
 });
+
